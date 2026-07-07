@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # --- LE BACKEND LARAVEL ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development # Cible l'étape de dev du Dockerfile
+    container_name: cinema-backend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      DB_HOST: db # Indique à Laravel de chercher le conteneur "db" au lieu de 127.0.0.1
+      DB_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - cinema-network
+
+  # --- LE FRONTEND REACT (VITE) ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development # Cible l'étape de dev du Dockerfile
+    container_name: cinema-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Évite que le local n'écrase les modules du conteneur
+    networks:
+      - cinema-network
+
+  # --- LA BASE DE DONNÉES MYSQL ---
+  db:
+    image: mysql:8.0
+    container_name: cinema-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: baobab_cinema 
+    volumes:
+      - cinema-db-data:/var/lib/mysql
+    networks:
+      - cinema-network
+
+networks:
+  cinema-network:
+    driver: bridge
+
+volumes:
+  cinema-db-data:
