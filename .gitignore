@@ -1,0 +1,6 @@
+# Environnement (secrets de prod pour docker-compose.prod.yml)
+.env
+.env.*
+!.env.example
+
+.DS_Store

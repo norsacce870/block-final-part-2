@@ -1,0 +1,62 @@
+# ── STAGE 1 : Build des dépendances ──
+FROM composer:latest AS vendor
+
+WORKDIR /app
+
+# Copier UNIQUEMENT les fichiers de dépendances d'abord (optimisation du cache)
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --optimize-autoloader \
+    --no-interaction
+
+# ── STAGE 2 : Image finale légère ──
+FROM php:8.4-fpm-alpine
+
+# Dépendances système minimales (Alpine)
+RUN apk add --no-cache \
+    git \
+    curl \
+    libpng \
+    libxml2 \
+    libzip \
+    oniguruma \
+    zip \
+    unzip \
+    $PHPIZE_DEPS \
+    libpng-dev \
+    libxml2-dev \
+    libzip-dev \
+    oniguruma-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip opcache \
+    && apk del $PHPIZE_DEPS libpng-dev libxml2-dev libzip-dev oniguruma-dev
+
+# Configuration Opcache
+RUN { \
+    echo "opcache.enable=1"; \
+    echo "opcache.memory_consumption=128"; \
+    echo "opcache.max_accelerated_files=10000"; \
+    echo "opcache.revalidate_freq=0"; \
+    } > /usr/local/etc/php/conf.d/opcache.ini
+
+WORKDIR /var/www/html
+
+# Récupérer le vendor déjà construit au stage 1 (pas besoin de Composer ici)
+COPY --from=vendor /app/vendor ./vendor
+
+# Copier le reste du code applicatif
+COPY . .
+
+# Terminer l'autoload maintenant que tout le code est présent
+RUN composer dump-autoload --optimize --no-dev
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
+
+EXPOSE 8000
+
+CMD ["sh", "-c", "php artisan migrate --force && php artisan storage:link 2>/dev/null || true; php artisan serve --host=0.0.0.0 --port=8000"]

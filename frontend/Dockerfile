@@ -1,23 +1,24 @@
-# --- ÉTAPE 1 : Base commune pour installer les modules Node ---
-FROM node:20-alpine AS base
+# ── STAGE 1 : Build React ──
+FROM node:20-alpine AS build
+
 WORKDIR /app
+
+# Déclarer l'argument de build
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package*.json ./
 RUN npm install
 
-# --- ÉTAPE 2 : Environnement de DÉVELOPPEMENT LOCAL ---
-FROM base AS development
-COPY . .
-EXPOSE 5173
-# Lance le serveur Vite en mode exposé pour Docker
-CMD ["npm", "run", "dev", "--", "--host"]
-
-# --- ÉTAPE 3 : Compilation pour la PRODUCTION ---
-FROM base AS builder
 COPY . .
 RUN npm run build
 
-# --- ÉTAPE 4 : Serveur Nginx final pour distribuer le Front en PRODUCTION ---
-FROM nginx:alpine AS production
-COPY --from=builder /app/dist /usr/share/nginx/html
+# ── STAGE 2 : Servir avec Nginx ──
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]

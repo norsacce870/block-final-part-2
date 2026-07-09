@@ -1,57 +1,100 @@
 version: '3.8'
 
 services:
-  # --- LE BACKEND LARAVEL ---
+
+  # --- BASE DE DONNÉES MYSQL ---
+  database:
+    image: mysql:8.0
+    container_name: baobab_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: baobab_cinema
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: baobab_user
+      MYSQL_PASSWORD: baobab_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - baobab_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  # --- ADMINISTRATION DE LA BDD (dev uniquement) ---
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: baobab_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
+    networks:
+      - baobab_network
+
+  # --- BACKEND LARAVEL ---
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: development # Cible l'étape de dev du Dockerfile
-    container_name: cinema-backend
-    ports:
-      - "8000:80"
+    container_name: baobab_backend
+    restart: unless-stopped
     volumes:
       - ./backend:/var/www/html
+      - /var/www/html/vendor
     environment:
-      DB_HOST: db # Indique à Laravel de chercher le conteneur "db" au lieu de 127.0.0.1
-      DB_PASSWORD: root
+      DB_HOST: database
+      DB_DATABASE: baobab_cinema
+      DB_USERNAME: baobab_user
+      DB_PASSWORD: baobab_pass
     depends_on:
-      - db
+      database:
+        condition: service_healthy
     networks:
-      - cinema-network
+      - baobab_network
 
-  # --- LE FRONTEND REACT (VITE) ---
+  # --- FRONTEND REACT (VITE) ---
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-      target: development # Cible l'étape de dev du Dockerfile
-    container_name: cinema-frontend
-    ports:
-      - "5173:5173"
+      dockerfile: Dockerfile.dev
+    container_name: baobab_frontend
+    restart: unless-stopped
     volumes:
       - ./frontend:/app
-      - /app/node_modules # Évite que le local n'écrase les modules du conteneur
-    networks:
-      - cinema-network
-
-  # --- LA BASE DE DONNÉES MYSQL ---
-  db:
-    image: mysql:8.0
-    container_name: cinema-db
-    ports:
-      - "3307:3306"
+      - /app/node_modules
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: baobab_cinema 
-    volumes:
-      - cinema-db-data:/var/lib/mysql
+      - CHOKIDAR_USEPOLLING=true
     networks:
-      - cinema-network
+      - baobab_network
+
+  # --- NGINX (reverse proxy principal, point d'entrée unique) ---
+  nginx:
+    image: nginx:alpine
+    container_name: baobab_nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - baobab_network
 
 networks:
-  cinema-network:
+  baobab_network:
     driver: bridge
 
 volumes:
-  cinema-db-data:
+  db_data:

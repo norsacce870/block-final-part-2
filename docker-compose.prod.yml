@@ -1,0 +1,67 @@
+services:
+
+  database:
+    image: mysql:8.0
+    container_name: baobab_db_prod
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: baobab_cinema
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: baobab_user
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data_prod:/var/lib/mysql
+    networks:
+      - baobab_network_prod
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: baobab_backend_prod
+    restart: unless-stopped
+    environment:
+      APP_NAME: "Baobab Cinema"
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: mysql
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_DATABASE: baobab_cinema
+      DB_USERNAME: baobab_user
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - baobab_network_prod
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: baobab_frontend_prod
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    depends_on:
+      - backend
+    networks:
+      - baobab_network_prod
+
+networks:
+  baobab_network_prod:
+    driver: bridge
+
+volumes:
+  db_data_prod:
