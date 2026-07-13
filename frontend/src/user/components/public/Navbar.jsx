@@ -21,7 +21,7 @@ const HOME_PATHS = ["/"];
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -93,6 +93,7 @@ export default function Navbar() {
     : "";
 
   const loggedIn = isAuthenticated();
+  const showAdminDashboard = loggedIn && isAdmin();
 
   // ── render ──────────────────────────────────────────────────────────────────
 
@@ -172,6 +173,19 @@ export default function Navbar() {
           >
             {theme === "dark" ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
           </button>
+
+          {/* Admin dashboard shortcut */}
+          {showAdminDashboard && (
+            <Button
+              asChild
+              className="hidden rounded-full bg-[var(--accent)] px-4 font-['Sora'] font-semibold text-white shadow-[0_8px_26px_rgba(58,110,165,0.32)] transition-all hover:-translate-y-0.5 hover:bg-[var(--accent2)] hover:shadow-[0_12px_34px_rgba(58,110,165,0.5)] sm:inline-flex"
+            >
+              <Link to="/admin" className="flex items-center gap-2">
+                <LayoutDashboard size={16} />
+                Dashboard
+              </Link>
+            </Button>
+          )}
 
           {/* Auth zone */}
           {loggedIn ? (
