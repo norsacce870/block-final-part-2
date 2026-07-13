@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Sun, Moon, Menu, X, User, LogOut } from "lucide-react";
+import { Search, Sun, Moon, Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/user/context/ThemeProvider";
 import { useAuth } from "@/context/AuthContext";
