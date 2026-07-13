@@ -291,6 +291,16 @@ export default function Navbar() {
 
             {loggedIn ? (
               <>
+                {showAdminDashboard && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-3 text-[15px] font-medium text-[var(--muted)] transition-colors hover:bg-white/5 hover:text-[var(--text)]"
+                  >
+                    <LayoutDashboard size={15} />
+                    Dashboard
+                  </Link>
+                )}
                 <Link
                   to="/profil"
                   onClick={() => setMenuOpen(false)}
