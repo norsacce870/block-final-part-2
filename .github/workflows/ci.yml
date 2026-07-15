@@ -80,7 +80,7 @@ jobs:
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"query": "mutation { serviceInstanceRedeploy(environmentId: \"${{ secrets.RAILWAY_ENV_ID }}\", serviceId: \"${{ secrets.RAILWAY_BACKEND_SERVICE_ID }}\") }"}' \
+            -d '{"query": "mutation($serviceId: String!, $environmentId: String!, $commitSha: String!) { serviceInstanceDeployV2(serviceId: $serviceId, environmentId: $environmentId, commitSha: $commitSha) }", "variables": {"serviceId": "${{ secrets.RAILWAY_BACKEND_SERVICE_ID }}", "environmentId": "${{ secrets.RAILWAY_ENV_ID }}", "commitSha": "${{ github.sha }}"}}' \
             https://backboard.railway.com/graphql/v2
 
       - name: Déployer le frontend sur Railway
@@ -88,5 +88,5 @@ jobs:
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"query": "mutation { serviceInstanceRedeploy(environmentId: \"${{ secrets.RAILWAY_ENV_ID }}\", serviceId: \"${{ secrets.RAILWAY_FRONTEND_SERVICE_ID }}\") }"}' \
+            -d '{"query": "mutation($serviceId: String!, $environmentId: String!, $commitSha: String!) { serviceInstanceDeployV2(serviceId: $serviceId, environmentId: $environmentId, commitSha: $commitSha) }", "variables": {"serviceId": "${{ secrets.RAILWAY_FRONTEND_SERVICE_ID }}", "environmentId": "${{ secrets.RAILWAY_ENV_ID }}", "commitSha": "${{ github.sha }}"}}' \
             https://backboard.railway.com/graphql/v2
