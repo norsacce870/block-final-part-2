@@ -20,7 +20,6 @@ function AdminProfile() {
     const [pw, setPw] = useState({ current: '', next: '', confirm: '' })
     const [pwErrors, setPwErrors] = useState({})
     const [pwSaving, setPwSaving] = useState(false)
-    const [pwSuccess, setPwSuccess] = useState('')
 
     // Toast
     const [toast, setToast] = useState('')
@@ -83,7 +82,6 @@ function AdminProfile() {
         if (Object.keys(errs).length) return
 
         setPwSaving(true)
-        setPwSuccess('')
         try {
             await api.put('/user/password', {
                 current_password: pw.current,

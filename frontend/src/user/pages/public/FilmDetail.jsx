@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Play, ArrowLeft } from "lucide-react";
 import api from "@/api/axios";
 import { useAuth } from "@/context/AuthContext";
@@ -30,6 +30,7 @@ function FilmDetailContent() {
   const { id } = useParams();
   const { showToast } = useToast();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const [film, setFilm] = useState(DEMO_FILM);
   const [screenings, setScreenings] = useState(DEMO_SCREENINGS);

@@ -39,6 +39,7 @@ export default function ScreeningDateChips({ dates, selectedDate, onSelect }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function formatDateLabel(dateStr) {
   const d = new Date(dateStr + "T00:00:00");
   return `${DOW_LABELS[d.getDay()]} ${d.getDate()} ${MONTH_LABELS[d.getMonth()]}`;

@@ -33,7 +33,7 @@ const STATUS = {
 // ─── main content ─────────────────────────────────────────────────────────────
 
 function ProfileContent() {
-  const { user, logout, loading: authLoading } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState("infos");
 
