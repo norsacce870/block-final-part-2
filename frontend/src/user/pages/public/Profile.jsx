@@ -242,7 +242,7 @@ function ProfileContent() {
                   {user?.role === "admin" ? "Administrateur" : "Membre"}
                 </span>
               </div>
-              <p className="text-[14.5px]" style={{ color: "rgba(221,230,240,.55)" }}>
+              <p className="text-[14.5px]" style={{ color: "var(--faint)" }}>
                 {user?.email}
                 {memberSince && ` · Membre depuis ${memberSince}`}
               </p>
@@ -263,7 +263,7 @@ function ProfileContent() {
                   <div className="font-['Sora'] text-[26px] font-bold" style={{ color: "var(--text)" }}>
                     {s.value}
                   </div>
-                  <div className="mt-0.5 text-[11.5px]" style={{ color: "rgba(221,230,240,.55)" }}>
+                  <div className="mt-0.5 text-[11.5px]" style={{ color: "var(--faint)" }}>
                     {s.label}
                   </div>
                 </div>
@@ -514,7 +514,7 @@ function ProfileContent() {
                               ["Places", `${b.seats_count}`],
                             ].map(([lbl, val]) => (
                               <div key={lbl}>
-                                <div className="text-[10.5px] uppercase tracking-[.08em]" style={{ color: "rgba(221,230,240,.5)" }}>{lbl}</div>
+                                <div className="text-[10.5px] uppercase tracking-[.08em]" style={{ color: "var(--faint)" }}>{lbl}</div>
                                 <div className="mt-0.5 text-[14px] font-semibold" style={{ color: "var(--text)" }}>{val}</div>
                               </div>
                             ))}
@@ -560,7 +560,7 @@ function ProfileContent() {
                 <h2 className="mb-1.5 font-['Sora'] text-[22px] font-semibold" style={{ color: "var(--text)" }}>
                   Mot de passe
                 </h2>
-                <p className="mb-7 text-[13.5px]" style={{ color: "rgba(221,230,240,.55)" }}>
+                <p className="mb-7 text-[13.5px]" style={{ color: "var(--faint)" }}>
                   Choisissez un mot de passe d'au moins 8 caractères.
                 </p>
 
@@ -651,7 +651,7 @@ function FloatField({ label, type = "text", value, onChange, disabled, error, cl
             fontSize: floated ? 10.5 : 15,
             letterSpacing: floated ? ".04em" : "normal",
             textTransform: floated ? "uppercase" : "none",
-            color: floated && !disabled ? "#5E94CE" : "rgba(221,230,240,.55)",
+            color: floated && !disabled ? "#5E94CE" : "var(--faint)",
             pointerEvents: "none",
             transition: "all .2s cubic-bezier(.16,.84,.3,1)",
           }}
@@ -708,7 +708,7 @@ function PwField({ label, value, onChange, error, autoComplete }) {
             fontSize: floated ? 10.5 : 15,
             letterSpacing: floated ? ".04em" : "normal",
             textTransform: floated ? "uppercase" : "none",
-            color: floated ? "#5E94CE" : "rgba(221,230,240,.55)",
+            color: floated ? "#5E94CE" : "var(--faint)",
             pointerEvents: "none",
             transition: "all .2s cubic-bezier(.16,.84,.3,1)",
           }}
