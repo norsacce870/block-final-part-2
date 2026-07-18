@@ -249,7 +249,8 @@ export default function Navbar() {
               <Button
                 asChild
                 variant="outline"
-                className="hidden rounded-full border-[var(--border)] bg-transparent px-[18px] text-[var(--text)] hover:bg-white/5 hover:text-[var(--text)] sm:inline-flex"
+                className="hidden rounded-full bg-transparent px-[18px] hover:bg-white/5 sm:inline-flex"
+                style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#3A6EA5", color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
               >
                 <Link to="/connexion">Connexion</Link>
               </Button>
@@ -330,7 +331,8 @@ export default function Navbar() {
               <Link
                 to="/connexion"
                 onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-3 py-3 text-[15px] font-medium text-[var(--muted)] transition-colors hover:bg-white/5 hover:text-[var(--text)] sm:hidden"
+                className="rounded-lg px-3 py-3 text-[15px] font-medium transition-colors hover:bg-white/5 hover:text-[var(--text)] sm:hidden"
+                style={{ color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
               >
                 Connexion
               </Link>

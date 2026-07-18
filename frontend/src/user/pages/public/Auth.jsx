@@ -110,8 +110,8 @@ function AuthContent({ initialMode }) {
     padding: "10px",
     borderRadius: "10px",
     border: "none",
-    background: active ? "var(--surface, #0B1028)" : "transparent",
-    color: active ? "#F9F9F9" : "var(--muted, #A8C0E0)",
+    background: active ? "#0B1028" : "transparent",
+    color: active ? "#F9F9F9" : "#A8C0E0",
     fontFamily: "Sora, sans-serif",
     fontWeight: active ? 600 : 400,
     fontSize: "14px",
@@ -127,7 +127,7 @@ function AuthContent({ initialMode }) {
       style={{
         minHeight: "100vh",
         background: "#000",
-        color: "var(--text, #F9F9F9)",
+        color: "#F9F9F9",
         fontFamily: "Inter, system-ui, sans-serif",
         position: "relative",
         overflow: "hidden",
@@ -149,7 +149,7 @@ function AuthContent({ initialMode }) {
           </Link>
           <Link
             to="/"
-            style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--muted, #A8C0E0)", fontSize: 14, fontWeight: 500, textDecoration: "none" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "#A8C0E0", fontSize: 14, fontWeight: 500, textDecoration: "none" }}
           >
             <ArrowLeft size={16} />
             Retour à l'accueil
@@ -174,7 +174,7 @@ function AuthContent({ initialMode }) {
         >
           {/* Heading */}
           <div style={{ textAlign: "center", marginBottom: 26 }}>
-            <h1 style={{ fontFamily: "Sora, sans-serif", fontWeight: 700, fontSize: 27, letterSpacing: "-.01em", margin: "0 0 7px", color: "var(--text, #F9F9F9)" }}>
+            <h1 style={{ fontFamily: "Sora, sans-serif", fontWeight: 700, fontSize: 27, letterSpacing: "-.01em", margin: "0 0 7px", color: "#F9F9F9" }}>
               {isLogin ? "Bon retour parmi nous" : "Créer un compte"}
             </h1>
             <p style={{ fontSize: 14, color: "rgba(221,230,240,.55)", margin: 0 }}>
@@ -183,7 +183,7 @@ function AuthContent({ initialMode }) {
           </div>
 
           {/* Tabs */}
-          <div style={{ display: "flex", gap: 5, padding: 5, borderRadius: 14, background: "var(--surface2, #121A3C)", border: "1px solid rgba(168,192,224,.14)", marginBottom: 28 }}>
+          <div style={{ display: "flex", gap: 5, padding: 5, borderRadius: 14, background: "#121A3C", border: "1px solid rgba(168,192,224,.14)", marginBottom: 28 }}>
             <button type="button" onClick={() => { setMode("login"); setErrors({}); setApiError(""); setVals({ firstName: "", lastName: "", email: "", password: "", confirm: "" }); }} style={tabStyle(isLogin)}>
               Connexion
             </button>
@@ -226,7 +226,7 @@ function AuthContent({ initialMode }) {
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 aria-label={showPw ? "Masquer" : "Afficher"}
-                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", width: 34, height: 34, borderRadius: 9, border: "none", background: "transparent", color: "var(--muted, #A8C0E0)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", width: 34, height: 34, borderRadius: 9, border: "none", background: "transparent", color: "#A8C0E0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
                 {showPw ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
@@ -247,7 +247,7 @@ function AuthContent({ initialMode }) {
             {/* Remember / Forgot (login only) */}
             {isLogin && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: -2 }}>
-                <label style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 13.5, color: "var(--muted, #A8C0E0)", cursor: "pointer" }}>
+                <label style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 13.5, color: "#A8C0E0", cursor: "pointer" }}>
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ width: 17, height: 17, accentColor: "#3A6EA5", cursor: "pointer" }} />
                   Se souvenir de moi
                 </label>
@@ -260,7 +260,7 @@ function AuthContent({ initialMode }) {
             {/* Terms (register only) */}
             {!isLogin && (
               <div>
-                <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, lineHeight: 1.5, color: "var(--muted, #A8C0E0)", cursor: "pointer" }}>
+                <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, lineHeight: 1.5, color: "#A8C0E0", cursor: "pointer" }}>
                   <input type="checkbox" checked={terms} onChange={(e) => { setTerms(e.target.checked); setErrors((er) => ({ ...er, terms: "" })); }} style={{ width: 17, height: 17, marginTop: 1, accentColor: "#3A6EA5", cursor: "pointer", flexShrink: 0 }} />
                   <span>J'accepte les{" "}
                     <a href="#" style={{ color: "#5E94CE" }}>conditions d'utilisation</a>
@@ -286,7 +286,7 @@ function AuthContent({ initialMode }) {
                 padding: 16,
                 borderRadius: 13,
                 border: "none",
-                background: "var(--accent, #3A6EA5)",
+                background: "#3A6EA5",
                 color: "#fff",
                 fontFamily: "Sora, sans-serif",
                 fontWeight: 600,
@@ -323,7 +323,7 @@ function AuthContent({ initialMode }) {
               borderRadius: 13,
               border: "1px solid rgba(168,192,224,.18)",
               background: "transparent",
-              color: "var(--text, #F9F9F9)",
+              color: "#F9F9F9",
               fontFamily: "Sora, sans-serif",
               fontWeight: 600,
               fontSize: 14.5,
@@ -336,7 +336,7 @@ function AuthContent({ initialMode }) {
           </button>
 
           {/* Switch */}
-          <p style={{ textAlign: "center", fontSize: 13.5, color: "var(--muted, #A8C0E0)", margin: "22px 0 0" }}>
+          <p style={{ textAlign: "center", fontSize: 13.5, color: "#A8C0E0", margin: "22px 0 0" }}>
             {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
             <button type="button" onClick={switchMode} style={{ background: "none", border: "none", color: "#5E94CE", font: "600 13.5px Inter, sans-serif", cursor: "pointer", padding: 0 }}>
               {isLogin ? "S'inscrire" : "Se connecter"}
@@ -347,11 +347,11 @@ function AuthContent({ initialMode }) {
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)", zIndex: 120, display: "flex", alignItems: "center", gap: 13, padding: "15px 22px", borderRadius: 14, background: "var(--surface2, #121A3C)", border: "1px solid rgba(94,148,206,.4)", boxShadow: "0 20px 60px rgba(0,0,0,.5)", whiteSpace: "nowrap" }}>
+        <div style={{ position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)", zIndex: 120, display: "flex", alignItems: "center", gap: 13, padding: "15px 22px", borderRadius: 14, background: "#121A3C", border: "1px solid rgba(94,148,206,.4)", boxShadow: "0 20px 60px rgba(0,0,0,.5)", whiteSpace: "nowrap" }}>
           <span style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(58,110,165,.25)", color: "#5E94CE", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
           </span>
-          <span style={{ fontSize: 14.5, fontWeight: 500, color: "var(--text, #F9F9F9)" }}>{toast}</span>
+          <span style={{ fontSize: 14.5, fontWeight: 500, color: "#F9F9F9" }}>{toast}</span>
         </div>
       )}
     </div>
@@ -377,7 +377,7 @@ function FloatingField({ label, type = "text", value, onChange, error, children,
           placeholder=" "
           style={{
             width: "100%",
-            background: "var(--surface2, #121A3C)",
+            background: "#121A3C",
             border: `1px solid ${error ? "#E08A7D" : focused ? "#5E94CE" : "rgba(168,192,224,.16)"}`,
             boxShadow: error
               ? "0 0 0 4px rgba(224,138,125,.12)"
@@ -386,7 +386,7 @@ function FloatingField({ label, type = "text", value, onChange, error, children,
               : "none",
             borderRadius: 13,
             padding: children ? "23px 50px 9px 16px" : "23px 16px 9px",
-            color: "var(--text, #F9F9F9)",
+            color: "#F9F9F9",
             font: "15px Inter, system-ui, sans-serif",
             outline: "none",
             boxSizing: "border-box",
