@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -34,32 +35,41 @@ class BookingController extends Controller
             'id_screening' => 'required|exists:screenings,id_screening',
         ]);
 
-        $screening = Screening::findOrFail($validated['id_screening']);
+        try {
+            $booking = DB::transaction(function () use ($validated) {
+                // Verrou pessimiste : bloque la ligne le temps de la transaction pour que
+                // deux réservations concurrentes sur la même séance ne lisent jamais le
+                // même seats_remaining avant d'écrire (évite la surréservation).
+                $screening = Screening::where('id_screening', $validated['id_screening'])
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-        if ($screening->seats_remaining < $validated['seats_count']) {
-            return response()->json([
-                'message' => 'Not enough seats available.'
-            ], 422);
+                if ($screening->seats_remaining < $validated['seats_count']) {
+                    throw new \DomainException('Not enough seats available.');
+                }
+
+                $screeningDateTime = \Carbon\Carbon::parse($screening->date . ' ' . $screening->time);
+                $expiresAt = $screeningDateTime->subHours(3);
+
+                if ($expiresAt->isPast()) {
+                    throw new \DomainException('Cette séance débute dans moins de 3h. Réservez sur place.');
+                }
+
+                $booking = Booking::create([
+                    'seats_count'  => $validated['seats_count'],
+                    'status'       => 'pending',
+                    'expires_at'   => $expiresAt,
+                    'id_user'      => Auth::id(),
+                    'id_screening' => $validated['id_screening'],
+                ]);
+
+                $screening->decrement('seats_remaining', $validated['seats_count']);
+
+                return $booking;
+            });
+        } catch (\DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         }
-
-        $screeningDateTime = \Carbon\Carbon::parse($screening->date . ' ' . $screening->time);
-        $expiresAt = $screeningDateTime->subHours(3);
-
-        if ($expiresAt->isPast()) {
-            return response()->json([
-                'message' => 'Cette séance débute dans moins de 3h. Réservez sur place.'
-            ], 422);
-        }
-
-        $booking = Booking::create([
-            'seats_count'  => $validated['seats_count'],
-            'status'       => 'pending',
-            'expires_at'   => $expiresAt,
-            'id_user'      => Auth::id(),
-            'id_screening' => $validated['id_screening'],
-        ]);
-
-        $screening->decrement('seats_remaining', $validated['seats_count']);
 
         return response()->json($booking->load(['screening.film', 'screening.room']), 201);
     }
