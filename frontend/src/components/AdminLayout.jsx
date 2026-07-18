@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { AdminThemeProvider, useAdminTheme } from '../context/AdminThemeProvider'
-import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react'
+import { Menu, X, Sun, Moon, ChevronDown, Home } from 'lucide-react'
 
 function AdminLayout({ children }) {
     return (
@@ -119,8 +119,17 @@ function AdminLayoutContent({ children }) {
                     })}
                 </div>
 
-                {/* Right: theme toggle + user menu + hamburger */}
+                {/* Right: back to site + theme toggle + user menu + hamburger */}
                 <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                    <Link
+                        to="/"
+                        className="flex items-center gap-1.5 rounded-lg border px-3 py-2 font-sans text-[0.85rem] transition-colors"
+                        style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
+                    >
+                        <Home size={16} />
+                        <span className="hidden sm:inline">Retour au site</span>
+                    </Link>
+
                     <button
                         type="button"
                         onClick={toggleTheme}
