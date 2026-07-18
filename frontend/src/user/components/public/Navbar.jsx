@@ -124,7 +124,8 @@ export default function Navbar() {
                 key={link.label}
                 href={`#${link.anchor}`}
                 onClick={(e) => handleNavClick(e, link)}
-                className="navlink text-[14.5px] font-medium text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+                className="navlink text-[14.5px] font-medium transition-colors hover:text-[var(--text)]"
+                style={{ color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
               >
                 {link.label}
               </a>
@@ -132,7 +133,8 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 to={link.to}
-                className="navlink text-[14.5px] font-medium text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+                className="navlink text-[14.5px] font-medium transition-colors hover:text-[var(--text)]"
+                style={{ color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
               >
                 {link.label}
               </Link>
@@ -150,6 +152,7 @@ export default function Navbar() {
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={menuOpen}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text)] transition-transform active:scale-95 md:hidden"
+            style={theme === "dark" ? { borderColor: "#FFFFFF", color: "#FFFFFF" } : { borderColor: "#3A6EA5", color: "#3A6EA5" }}
           >
             {menuOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
           </button>
@@ -160,6 +163,7 @@ export default function Navbar() {
             onClick={openSearch}
             aria-label="Rechercher"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text)] transition-transform active:scale-95 sm:h-10 sm:w-10"
+            style={theme === "dark" ? { borderColor: "#FFFFFF", color: "#FFFFFF" } : { borderColor: "#3A6EA5", color: "#3A6EA5" }}
           >
             <Search className="h-[18px] w-[18px]" />
           </button>
@@ -170,6 +174,7 @@ export default function Navbar() {
             onClick={toggleTheme}
             aria-label="Changer de thème"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text)] transition-transform active:scale-95 sm:h-10 sm:w-10"
+            style={theme === "dark" ? { borderColor: "#FFFFFF", color: "#FFFFFF" } : { borderColor: "#3A6EA5", color: "#3A6EA5" }}
           >
             {theme === "dark" ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
           </button>
@@ -273,7 +278,8 @@ export default function Navbar() {
                   key={link.label}
                   href={`#${link.anchor}`}
                   onClick={(e) => handleNavClick(e, link)}
-                  className="rounded-lg px-3 py-3 text-[15px] font-medium text-[var(--muted)] transition-colors hover:bg-white/5 hover:text-[var(--text)]"
+                  className="rounded-lg px-3 py-3 text-[15px] font-medium transition-colors hover:bg-white/5 hover:text-[var(--text)]"
+                  style={{ color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
                 >
                   {link.label}
                 </a>
@@ -282,7 +288,8 @@ export default function Navbar() {
                   key={link.label}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-3 text-[15px] font-medium text-[var(--muted)] transition-colors hover:bg-white/5 hover:text-[var(--text)]"
+                  className="rounded-lg px-3 py-3 text-[15px] font-medium transition-colors hover:bg-white/5 hover:text-[var(--text)]"
+                  style={{ color: theme === "dark" ? "#FFFFFF" : "#3A6EA5" }}
                 >
                   {link.label}
                 </Link>
@@ -336,7 +343,10 @@ export default function Navbar() {
       {searchOpen && (
         <div className="border-t border-[var(--border)] px-4 py-3 sm:px-8" style={{ backgroundColor: "var(--bg)" }}>
           <div className="mx-auto flex max-w-[1320px] items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--surface2)] px-5 py-1">
-            <Search className="h-[18px] w-[18px] text-[var(--muted)]" />
+            <Search
+              className="h-[18px] w-[18px] text-[var(--muted)]"
+              style={theme === "dark" ? { color: "#FFFFFF" } : { color: "#3A6EA5" }}
+            />
             <input
               ref={searchInputRef}
               type="text"

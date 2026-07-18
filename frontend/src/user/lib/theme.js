@@ -23,7 +23,7 @@ export const THEMES = {
     "--border": "rgba(23,40,109,0.12)",
     "--text": "#0A0F2C",
     "--muted": "#2D3E50",
-    "--faint": "rgba(45,62,80,0.62)",
+    "--faint": "rgba(45,62,80,0.8)",
     "--accent": "#3A6EA5",
     "--accent2": "#2C5C92",
     "--chip": "rgba(23,40,109,0.05)",
