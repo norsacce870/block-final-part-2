@@ -205,4 +205,26 @@
     filter: var(--admin-icon-filter);
     cursor: pointer;
   }
+
+  /* Chrome/Edge force a light autofill background (~#e8f0fe) over the input,
+     regardless of author CSS — that leaves floating labels styled for a dark
+     field (e.g. #5e94ce) sitting on a light patch with ~2.77:1 contrast.
+     The inset box-shadow trick is the only way to override it. */
+  .autofill-dark:-webkit-autofill,
+  .autofill-dark:-webkit-autofill:hover,
+  .autofill-dark:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #121A3C inset !important;
+    -webkit-text-fill-color: #F9F9F9 !important;
+    caret-color: #F9F9F9 !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  .autofill-theme:-webkit-autofill,
+  .autofill-theme:-webkit-autofill:hover,
+  .autofill-theme:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface2, #121A3C) inset !important;
+    -webkit-text-fill-color: var(--text, #F9F9F9) !important;
+    caret-color: var(--text, #F9F9F9) !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
 }

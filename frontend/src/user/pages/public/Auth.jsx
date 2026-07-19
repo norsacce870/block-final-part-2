@@ -382,6 +382,7 @@ function FloatingField({ label, type = "text", value, onChange, error, children,
           onBlur={() => setFocused(false)}
           autoComplete={autoComplete}
           placeholder=" "
+          className="autofill-dark"
           style={{
             width: "100%",
             background: "#121A3C",

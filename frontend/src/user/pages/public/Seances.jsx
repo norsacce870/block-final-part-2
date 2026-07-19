@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, RotateCcw, CalendarDays } from "lucide-react";
-import { ThemeProvider } from "@/user/context/ThemeProvider";
+import { ThemeProvider, useTheme } from "@/user/context/ThemeProvider";
 import Navbar from "@/user/components/public/Navbar";
 import Footer from "@/user/components/public/Footer";
 import api from "@/api/axios";
@@ -44,10 +44,17 @@ const FORMATS = [
 ];
 
 // ─── seat colour ──────────────────────────────────────────────────────────────
-function seatColor(n) {
-  if (n > 30) return "#7FB98E";
-  if (n > 0)  return "#E0A458";
-  return "#E08A7D";
+// Pastel tones read fine on the dark surfaces but drop under 3:1 on the
+// near-white --surface2 in light mode, so each status needs a darker variant.
+function seatColor(n, theme) {
+  if (theme === "dark") {
+    if (n > 30) return "#7FB98E";
+    if (n > 0)  return "#E0A458";
+    return "#E08A7D";
+  }
+  if (n > 30) return "#256B48";
+  if (n > 0)  return "#8A5A12";
+  return "#A6362A";
 }
 
 // ─── wrapper ──────────────────────────────────────────────────────────────────
@@ -62,6 +69,7 @@ export default function Seances() {
 // ─── main ─────────────────────────────────────────────────────────────────────
 function SeancesContent() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const days = useMemo(buildDays, []);
 
   const [screenings, setScreenings] = useState([]);
@@ -148,7 +156,7 @@ function SeancesContent() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-8">
           {/* Label */}
           <div className="mb-3.5 flex items-center gap-2.5">
-            <span className="font-mono text-[11px] uppercase tracking-[.28em]" style={{ color: "#5E94CE" }}>
+            <span className="font-mono text-[11px] uppercase tracking-[.28em]" style={{ color: "var(--accent2)" }}>
               Programme de la semaine
             </span>
             <span className="h-px w-7 opacity-50" style={{ background: "#5E94CE" }} />
@@ -197,15 +205,15 @@ function SeancesContent() {
       <div
         className="sticky top-[69px] z-40 mt-6 border-b backdrop-blur-[14px]"
         style={{
-          background: "rgba(0,0,0,.7)",
-          borderColor: "rgba(168,192,224,.1)",
+          background: theme === "dark" ? "rgba(0,0,0,.7)" : "rgba(249,249,249,.85)",
+          borderColor: "var(--border)",
           WebkitBackdropFilter: "blur(14px)",
         }}
       >
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-5 px-4 py-4 sm:gap-7 sm:px-8">
           {/* Period */}
           <div className="flex items-center gap-2.5">
-            <span className="font-mono text-[11px] uppercase tracking-[.06em]" style={{ color: "rgba(221,230,240,.5)" }}>
+            <span className="font-mono text-[11px] uppercase tracking-[.06em]" style={{ color: "var(--muted)" }}>
               Moment
             </span>
             <div className="flex gap-2">
@@ -219,7 +227,7 @@ function SeancesContent() {
 
           {/* Format */}
           <div className="flex items-center gap-2.5">
-            <span className="font-mono text-[11px] uppercase tracking-[.06em]" style={{ color: "rgba(221,230,240,.5)" }}>
+            <span className="font-mono text-[11px] uppercase tracking-[.06em]" style={{ color: "var(--muted)" }}>
               Format
             </span>
             <div className="flex gap-2">
@@ -324,7 +332,7 @@ function SeancesContent() {
                       <Link
                         to={`/films/${film.id_film}`}
                         className="ml-1 inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:opacity-80"
-                        style={{ color: "#5E94CE" }}
+                        style={{ color: "var(--accent2)" }}
                       >
                         Fiche du film
                         <ArrowRight size={13} />
@@ -343,7 +351,7 @@ function SeancesContent() {
                   const tagBg    = isImax ? "rgba(94,148,206,.2)"  : isVip ? "rgba(224,164,88,.18)"  : "var(--chip, rgba(168,192,224,.1))";
                   const tagColor = isImax ? "#DDE6F0" : isVip ? "#E0A458" : "var(--muted)";
                   const tagBorder = isImax ? "rgba(94,148,206,.4)" : isVip ? "rgba(224,164,88,.35)" : "var(--border)";
-                  const sc = seatColor(s.seats_remaining);
+                  const sc = seatColor(s.seats_remaining, theme);
 
                   return (
                     <div

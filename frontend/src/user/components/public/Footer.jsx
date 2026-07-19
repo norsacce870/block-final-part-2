@@ -122,7 +122,7 @@ export default function Footer() {
         <span className="text-[13px] text-[var(--faint)]">
           © {new Date().getFullYear()} Baobab Cinéma. Tous droits réservés.
         </span>
-        <span className="font-mono text-[11px] tracking-[0.08em] text-[rgba(221,230,240,0.4)]">
+        <span className="font-mono text-[11px] tracking-[0.08em] text-[var(--faint)]">
           Conçu avec soin · Paris · Dakar · Abidjan
         </span>
       </div>

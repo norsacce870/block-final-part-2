@@ -635,6 +635,7 @@ function FloatField({ label, type = "text", value, onChange, disabled, error, cl
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder=" "
+          className="autofill-theme"
           style={{
             width: "100%",
             background: disabled ? "transparent" : "var(--surface2, #121A3C)",
@@ -659,7 +660,7 @@ function FloatField({ label, type = "text", value, onChange, disabled, error, cl
             fontSize: floated ? 10.5 : 15,
             letterSpacing: floated ? ".04em" : "normal",
             textTransform: floated ? "uppercase" : "none",
-            color: floated && !disabled ? "#5E94CE" : "var(--faint)",
+            color: floated && !disabled ? "var(--accent2)" : "var(--faint)",
             pointerEvents: "none",
             transition: "all .2s cubic-bezier(.16,.84,.3,1)",
           }}
@@ -701,6 +702,7 @@ function PwField({ label, value, onChange, error, autoComplete }) {
           onBlur={() => setFocused(false)}
           autoComplete={autoComplete}
           placeholder=" "
+          className="autofill-theme"
           style={{
             width: "100%",
             background: "var(--surface2, #121A3C)",
@@ -724,7 +726,7 @@ function PwField({ label, value, onChange, error, autoComplete }) {
             fontSize: floated ? 10.5 : 15,
             letterSpacing: floated ? ".04em" : "normal",
             textTransform: floated ? "uppercase" : "none",
-            color: floated ? "#5E94CE" : "var(--faint)",
+            color: floated ? "var(--accent2)" : "var(--faint)",
             pointerEvents: "none",
             transition: "all .2s cubic-bezier(.16,.84,.3,1)",
           }}

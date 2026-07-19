@@ -33,7 +33,7 @@ function AdminLayoutContent({ children }) {
     // where the inline nav reappears, so it can't get stuck open behind it.
     useEffect(() => {
         const onResize = () => {
-            if (window.innerWidth >= 768) setMobileOpen(false)
+            if (window.innerWidth >= 1024) setMobileOpen(false)
         }
         window.addEventListener('resize', onResize)
         return () => window.removeEventListener('resize', onResize)
@@ -94,7 +94,7 @@ function AdminLayoutContent({ children }) {
                 </div>
 
                 {/* Nav links — hidden on mobile, centered on desktop */}
-                <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 md:flex">
+                <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 lg:flex">
                     {navItems.map((item) => {
                         const active = isActive(item)
                         return (
@@ -123,6 +123,7 @@ function AdminLayoutContent({ children }) {
                 <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                     <Link
                         to="/"
+                        aria-label="Retour au site"
                         className="flex items-center gap-1.5 rounded-lg border px-3 py-2 font-sans text-[0.85rem] transition-colors"
                         style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
                     >
@@ -141,7 +142,7 @@ function AdminLayoutContent({ children }) {
                     </button>
 
                     {/* User menu — hidden on mobile */}
-                    <div className="relative hidden md:block" ref={menuRef}>
+                    <div className="relative hidden lg:block" ref={menuRef}>
                         <button
                             onClick={() => setMenuOpen((v) => !v)}
                             className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 font-sans text-[0.95rem] transition-colors"
@@ -183,7 +184,7 @@ function AdminLayoutContent({ children }) {
 
                     {/* Hamburger — visible on mobile */}
                     <button
-                        className="flex h-9 w-9 items-center justify-center md:hidden"
+                        className="flex h-9 w-9 items-center justify-center lg:hidden"
                         onClick={() => setMobileOpen((v) => !v)}
                         aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
                         aria-expanded={mobileOpen}
@@ -197,7 +198,7 @@ function AdminLayoutContent({ children }) {
             {/* Mobile menu */}
             {mobileOpen && (
                 <div
-                    className="flex flex-col gap-1 border-b px-5 py-3 md:hidden"
+                    className="flex flex-col gap-1 border-b px-5 py-3 lg:hidden"
                     style={{ backgroundColor: 'var(--admin-nav)', borderColor: 'var(--admin-border)' }}
                 >
                     {navItems.map((item) => (
