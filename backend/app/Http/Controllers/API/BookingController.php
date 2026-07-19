@@ -76,6 +76,10 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
+        if ($booking->id_user !== Auth::id() && !Auth::user()->isAdmin()) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
         return response()->json($booking->load(['screening.film', 'screening.room']));
     }
 
