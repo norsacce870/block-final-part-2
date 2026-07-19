@@ -616,11 +616,18 @@ function ProfileContent() {
 function FloatField({ label, type = "text", value, onChange, disabled, error, className = "" }) {
   const [focused, setFocused] = useState(false);
   const floated = focused || value !== "";
+  const inputId = `profile-field-${label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
 
   return (
     <div className={className}>
       <div style={{ position: "relative" }}>
         <input
+          id={inputId}
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -644,6 +651,7 @@ function FloatField({ label, type = "text", value, onChange, disabled, error, cl
           }}
         />
         <label
+          htmlFor={inputId}
           style={{
             position: "absolute",
             left: 16,
@@ -674,11 +682,18 @@ function PwField({ label, value, onChange, error, autoComplete }) {
   const [show, setShow] = useState(false);
   const [focused, setFocused] = useState(false);
   const floated = focused || value !== "";
+  const inputId = `profile-pw-${label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
 
   return (
     <div>
       <div style={{ position: "relative" }}>
         <input
+          id={inputId}
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -701,6 +716,7 @@ function PwField({ label, value, onChange, error, autoComplete }) {
           }}
         />
         <label
+          htmlFor={inputId}
           style={{
             position: "absolute",
             left: 16,

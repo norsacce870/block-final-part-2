@@ -118,6 +118,7 @@ function AccueilContent() {
             <Search className="h-5 w-5 shrink-0" style={{ color: "var(--muted)" }} />
             <input
               placeholder="Rechercher un film, un genre, un réalisateur…"
+              aria-label="Rechercher un film, un genre, un réalisateur"
               className="min-w-0 flex-1 bg-transparent py-3 text-sm placeholder:opacity-60 focus:outline-none sm:text-base"
               style={{ color: "var(--text)" }}
             />
@@ -494,6 +495,7 @@ function Newsletter({ onSubscribe }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="votre@email.com"
+              aria-label="Adresse e-mail pour la newsletter"
               className="min-w-[240px] flex-1 rounded-xl border border-[rgba(168,192,224,0.25)] bg-[rgba(0,0,0,0.3)] px-5 py-4 text-[15px] text-[#F9F9F9] outline-none transition-colors focus:border-[#5E94CE]/70"
             />
             <button

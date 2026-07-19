@@ -353,6 +353,7 @@ export default function Navbar() {
               ref={searchInputRef}
               type="text"
               placeholder="Rechercher un film, un genre, un réalisateur…"
+              aria-label="Rechercher un film, un genre, un réalisateur"
               className="w-full bg-transparent py-3 text-[15px] text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none"
             />
           </div>

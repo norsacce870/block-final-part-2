@@ -363,11 +363,18 @@ function AuthContent({ initialMode }) {
 function FloatingField({ label, type = "text", value, onChange, error, children, autoComplete }) {
   const [focused, setFocused] = useState(false);
   const floated = focused || value !== "";
+  const inputId = `field-${label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
 
   return (
     <div>
       <div style={{ position: "relative" }}>
         <input
+          id={inputId}
           type={type}
           value={value}
           onChange={onChange}
@@ -394,6 +401,7 @@ function FloatingField({ label, type = "text", value, onChange, error, children,
           }}
         />
         <label
+          htmlFor={inputId}
           style={{
             position: "absolute",
             left: 16,

@@ -79,6 +79,7 @@ function Categories() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Nom de la catégorie"
+                        aria-label="Nom de la catégorie"
                         required
                         className="admin-input flex-1 rounded-xl border px-4 py-3 text-[15px] outline-none"
                         style={{

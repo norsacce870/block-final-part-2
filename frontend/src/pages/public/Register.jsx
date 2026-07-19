@@ -100,8 +100,9 @@ function Register() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <label style={labelStyle}>Prénom</label>
+                            <label htmlFor="register-first-name" style={labelStyle}>Prénom</label>
                             <input
+                                id="register-first-name"
                                 name="first_name"
                                 value={form.first_name}
                                 onChange={handleChange}
@@ -110,8 +111,9 @@ function Register() {
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <label style={labelStyle}>Nom</label>
+                            <label htmlFor="register-last-name" style={labelStyle}>Nom</label>
                             <input
+                                id="register-last-name"
                                 name="last_name"
                                 value={form.last_name}
                                 onChange={handleChange}
@@ -122,8 +124,9 @@ function Register() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={labelStyle}>E-mail</label>
+                        <label htmlFor="register-email" style={labelStyle}>E-mail</label>
                         <input
+                            id="register-email"
                             type="email"
                             name="email"
                             value={form.email}
@@ -134,8 +137,9 @@ function Register() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={labelStyle}>Mot de passe</label>
+                        <label htmlFor="register-password" style={labelStyle}>Mot de passe</label>
                         <input
+                            id="register-password"
                             type="password"
                             name="password"
                             value={form.password}
@@ -146,8 +150,9 @@ function Register() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={labelStyle}>Confirmer le mot de passe</label>
+                        <label htmlFor="register-password-confirmation" style={labelStyle}>Confirmer le mot de passe</label>
                         <input
+                            id="register-password-confirmation"
                             type="password"
                             name="password_confirmation"
                             value={form.password_confirmation}

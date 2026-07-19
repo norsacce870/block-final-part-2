@@ -77,8 +77,9 @@ function Login() {
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ color: '#9aafd4', fontSize: '0.875rem' }}>E-mail</label>
+                        <label htmlFor="login-email" style={{ color: '#9aafd4', fontSize: '0.875rem' }}>E-mail</label>
                         <input
+                            id="login-email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -97,8 +98,9 @@ function Login() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ color: '#9aafd4', fontSize: '0.875rem' }}>Mot de passe</label>
+                        <label htmlFor="login-password" style={{ color: '#9aafd4', fontSize: '0.875rem' }}>Mot de passe</label>
                         <input
+                            id="login-password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

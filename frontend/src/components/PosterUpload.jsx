@@ -32,7 +32,14 @@ function PosterUpload({ currentPoster, onChange, hint }) {
             )}
 
             <div className="flex flex-col gap-1.5">
-                <input ref={inputRef} type="file" accept="image/*" onChange={handleChange} className="hidden" />
+                <input
+                    ref={inputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleChange}
+                    aria-label="Choisir une affiche de film"
+                    className="hidden"
+                />
                 <button
                     type="button"
                     onClick={() => inputRef.current?.click()}
