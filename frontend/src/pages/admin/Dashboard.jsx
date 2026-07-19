@@ -191,7 +191,7 @@ export default function Dashboard() {
                             <Link
                                 to="/admin/bookings"
                                 className="flex items-center gap-1 text-xs font-medium"
-                                style={{ color: 'var(--admin-accent)' }}
+                                style={{ color: 'var(--admin-accent-text)' }}
                             >
                                 Tout voir <ArrowRight size={13} />
                             </Link>
