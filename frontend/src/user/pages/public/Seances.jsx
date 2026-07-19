@@ -5,8 +5,7 @@ import { ThemeProvider, useTheme } from "@/user/context/ThemeProvider";
 import Navbar from "@/user/components/public/Navbar";
 import Footer from "@/user/components/public/Footer";
 import api from "@/api/axios";
-
-const STORAGE_URL = "http://127.0.0.1:8000/storage/";
+import { STORAGE_URL } from "@/utils/storageUrl";
 
 const DOW  = ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."];
 const MONS = ["Jan.", "Fév.", "Mars", "Avr.", "Mai", "Juin",

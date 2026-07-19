@@ -4,8 +4,7 @@ import { Pencil, Trash2, Plus, Eye, Film as FilmIcon } from 'lucide-react'
 import AdminLayout from '../../../components/AdminLayout'
 import PageHeader from '../../../components/PageHeader'
 import api from '../../../api/axios'
-
-const STORAGE_URL = 'http://127.0.0.1:8000/storage/'
+import { STORAGE_URL } from '../../../utils/storageUrl'
 
 function FilmsList() {
     const [films, setFilms] = useState([])

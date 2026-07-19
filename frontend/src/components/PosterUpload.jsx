@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { Upload, ImageIcon } from 'lucide-react'
-
-const STORAGE_URL = 'http://127.0.0.1:8000/storage/'
+import { STORAGE_URL } from '@/utils/storageUrl'
 
 function PosterUpload({ currentPoster, onChange, hint }) {
     const inputRef = useRef(null)

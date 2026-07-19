@@ -13,8 +13,7 @@ import ScreeningDateChips from "@/user/components/public/ScreeningDateChips";
 import ScreeningCard from "@/user/components/public/ScreeningCard";
 import { ReservationSidebar, MobileReserveBar } from "@/user/components/public/ReservationPanel";
 import { DEMO_FILM, DEMO_SCREENINGS } from "@/user/data/filmDetailDemo";
-
-const STORAGE_URL = "http://127.0.0.1:8000/storage/";
+import { STORAGE_URL } from "@/utils/storageUrl";
 
 export default function FilmDetail() {
   return (
