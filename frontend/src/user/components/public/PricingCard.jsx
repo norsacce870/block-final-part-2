@@ -22,23 +22,23 @@ export default function PricingCard({ tier, onSelect }) {
         </span>
       ) : null}
 
-      <h3 className="font-['Sora'] text-[22px] font-semibold text-[var(--text)]">
+      <h3 className={`font-['Sora'] text-[22px] font-semibold ${featured ? "text-white" : "text-[var(--text)]"}`}>
         {name}
       </h3>
-      <p className="mt-2 text-[13.5px] text-[var(--faint)]">{tagline}</p>
+      <p className={`mt-2 text-[13.5px] ${featured ? "text-[#A8C0E0]" : "text-[var(--faint)]"}`}>{tagline}</p>
 
       <div className="my-6 flex items-baseline gap-1.5">
-        <span className="font-['Sora'] text-5xl font-bold tracking-[-0.03em] text-[var(--text)]">
+        <span className={`font-['Sora'] text-5xl font-bold tracking-[-0.03em] ${featured ? "text-white" : "text-[var(--text)]"}`}>
           {price}
         </span>
-        <span className="text-[15px] text-[var(--muted)]">€ / place</span>
+        <span className={`text-[15px] ${featured ? "text-[#A8C0E0]" : "text-[var(--muted)]"}`}>€ / place</span>
       </div>
 
       <div className="mb-[30px] flex flex-col gap-[13px]">
         {perks.map((perk) => (
           <div
             key={perk}
-            className="flex items-center gap-[11px] text-[14.5px] text-[var(--muted)]"
+            className={`flex items-center gap-[11px] text-[14.5px] ${featured ? "text-[#A8C0E0]" : "text-[var(--muted)]"}`}
           >
             <Check
               className="h-[17px] w-[17px] shrink-0 text-[#5E94CE]"
