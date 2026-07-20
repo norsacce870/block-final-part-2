@@ -15,7 +15,10 @@ function FilmsList() {
         const load = async () => {
             setLoading(true)
             const res = await api.get('/films')
-            setFilms(res.data)
+            const sorted = [...res.data].sort(
+                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            )
+            setFilms(sorted)
             setLoading(false)
         }
         load()

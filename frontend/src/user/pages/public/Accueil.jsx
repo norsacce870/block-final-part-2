@@ -62,13 +62,16 @@ function AccueilContent() {
         const films = res.data?.data ?? res.data ?? [];
         if (!films.length) return;
 
-        const showing = films.filter((f) => f.status === "showing");
+        const showing = films
+          .filter((f) => f.status === "showing")
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         const comingSoon = films.filter((f) => f.status === "coming_soon");
 
         if (showing.length) {
           // No dedicated "featured" flag exists on the film model yet, so
-          // the hero just spotlights the first showing film — and it stays
-          // in the grid below too, rather than vanishing from "À l'affiche".
+          // the hero spotlights the most recently created showing film —
+          // and it stays in the grid below too, rather than vanishing from
+          // "À l'affiche".
           setFeatured(showing[0]);
           setNowShowing(showing);
         }
