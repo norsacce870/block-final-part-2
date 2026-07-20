@@ -421,7 +421,7 @@ function Hero({ film, onWatchTrailer, onReserve }) {
             )}
           </div>
 
-          <p className="mb-9 max-w-[540px] text-[17px] font-light leading-[1.65] text-[#C9D6E8]">
+          <p className="mb-9 line-clamp-3 max-w-[540px] text-[17px] font-light leading-[1.65] text-[#C9D6E8]">
             {film.synopsis}
           </p>
 
