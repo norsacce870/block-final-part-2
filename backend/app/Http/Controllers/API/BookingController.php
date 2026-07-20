@@ -11,14 +11,19 @@ use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user(); 
+        $user = Auth::user();
 
         if ($user->isAdmin()) {
-            return response()->json(
-                Booking::with(['user', 'screening.film', 'screening.room'])->get()
-            );
+            $query = Booking::with(['user', 'screening.film', 'screening.room'])
+                ->orderByDesc('created_at');
+
+            if ($request->has('page')) {
+                return response()->json($query->paginate(15));
+            }
+
+            return response()->json($query->get());
         }
 
         return response()->json(
@@ -112,7 +117,7 @@ class BookingController extends Controller
             $booking->screening->increment('seats_remaining', $booking->seats_count);
         }
 
-        $booking->delete();
+        $booking->update(['status' => 'cancelled']);
 
         return response()->json(null, 204);
     }

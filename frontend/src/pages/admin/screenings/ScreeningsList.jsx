@@ -3,26 +3,37 @@ import { Link } from 'react-router-dom'
 import { Pencil, Trash2, Plus, CalendarClock } from 'lucide-react'
 import AdminLayout from '../../../components/AdminLayout'
 import PageHeader from '../../../components/PageHeader'
+import AdminPagination from '../../../components/AdminPagination'
 import api from '../../../api/axios'
 
 function ScreeningsList() {
     const [screenings, setScreenings] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [total, setTotal] = useState(0)
+
+    const load = async () => {
+        setLoading(true)
+        const res = await api.get('/screenings', { params: { page } })
+        setScreenings(res.data.data)
+        setLastPage(res.data.last_page)
+        setTotal(res.data.total)
+        setLoading(false)
+    }
 
     useEffect(() => {
-        const load = async () => {
-            setLoading(true)
-            const res = await api.get('/screenings')
-            setScreenings(res.data)
-            setLoading(false)
-        }
         load()
-    }, [])
+    }, [page])
 
     const handleDelete = async (id) => {
         if (!confirm('Supprimer cette séance ?')) return
         await api.delete(`/screenings/${id}`)
-        setScreenings(screenings.filter(s => s.id_screening !== id))
+        if (screenings.length === 1 && page > 1) {
+            setPage(page - 1)
+        } else {
+            load()
+        }
     }
 
     const seatStatus = (n) => {
@@ -128,6 +139,8 @@ function ScreeningsList() {
                             })
                         )}
                     </div>
+
+                    <AdminPagination page={page} lastPage={lastPage} total={total} onPageChange={setPage} />
                 </div>
             </div>
         </AdminLayout>

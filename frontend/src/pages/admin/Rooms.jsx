@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import PageHeader from '../../components/PageHeader'
+import AdminPagination from '../../components/AdminPagination'
 import api from '../../api/axios'
 import { Plus, Pencil, Trash2, X, AlertCircle, DoorOpen, ChevronDown } from 'lucide-react'
 
@@ -13,10 +14,15 @@ function Rooms() {
     const [editId, setEditId] = useState(null)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [total, setTotal] = useState(0)
 
     const fetchRooms = async () => {
-        const res = await api.get('/rooms')
-        setRooms(res.data)
+        const res = await api.get('/rooms', { params: { page } })
+        setRooms(res.data.data)
+        setLastPage(res.data.last_page)
+        setTotal(res.data.total)
     }
 
     useEffect(() => {
@@ -26,7 +32,7 @@ function Rooms() {
             setLoading(false)
         }
         load()
-    }, [])
+    }, [page])
 
     const resetForm = () => {
         setEditId(null)
@@ -67,7 +73,11 @@ function Rooms() {
         if (!confirm('Supprimer cette salle ?')) return
         try {
             await api.delete(`/rooms/${id}`)
-            fetchRooms()
+            if (rooms.length === 1 && page > 1) {
+                setPage(page - 1)
+            } else {
+                fetchRooms()
+            }
         } catch {
             setError('Impossible de supprimer une salle avec des séances.')
         }
@@ -277,6 +287,8 @@ function Rooms() {
                             })
                         )}
                     </div>
+
+                    <AdminPagination page={page} lastPage={lastPage} total={total} onPageChange={setPage} />
                 </div>
             </div>
         </AdminLayout>
