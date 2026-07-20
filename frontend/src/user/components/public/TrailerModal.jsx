@@ -10,11 +10,14 @@ function toEmbedUrl(url) {
   try {
     const u = new URL(url);
 
-    // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+    // YouTube: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID or youtube.com/shorts/ID
     if (u.hostname.includes("youtube.com") || u.hostname.includes("youtu.be")) {
+      const segments = u.pathname.split("/").filter(Boolean);
       const id =
         u.searchParams.get("v") ||
-        (u.hostname === "youtu.be" ? u.pathname.slice(1) : null);
+        (u.hostname === "youtu.be" ? segments[0] : null) ||
+        (segments[0] === "embed" ? segments[1] : null) ||
+        (segments[0] === "shorts" ? segments[1] : null);
       if (id) return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
     }
 
