@@ -8,11 +8,15 @@ use Illuminate\Http\Request;
 
 class ScreeningController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(
-            Screening::with(['film', 'room'])->get()
-        );
+        $query = Screening::with(['film', 'room'])->orderByDesc('created_at');
+
+        if ($request->has('page')) {
+            return response()->json($query->paginate(15));
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)

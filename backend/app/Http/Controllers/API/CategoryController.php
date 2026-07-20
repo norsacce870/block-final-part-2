@@ -8,9 +8,15 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Category::all());
+        $query = Category::orderByDesc('created_at');
+
+        if ($request->has('page')) {
+            return response()->json($query->paginate(15));
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)

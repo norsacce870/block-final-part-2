@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import PageHeader from '../../components/PageHeader'
+import AdminPagination from '../../components/AdminPagination'
 import api from '../../api/axios'
 import { Plus, Pencil, Trash2, X, AlertCircle, Tag } from 'lucide-react'
 
@@ -10,10 +11,15 @@ function Categories() {
     const [editId, setEditId] = useState(null)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [total, setTotal] = useState(0)
 
     const fetchCategories = async () => {
-        const res = await api.get('/categories')
-        setCategories(res.data)
+        const res = await api.get('/categories', { params: { page } })
+        setCategories(res.data.data)
+        setLastPage(res.data.last_page)
+        setTotal(res.data.total)
     }
 
     useEffect(() => {
@@ -23,7 +29,7 @@ function Categories() {
             setLoading(false)
         }
         load()
-    }, [])
+    }, [page])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -57,7 +63,11 @@ function Categories() {
     const handleDelete = async (id) => {
         if (!confirm('Supprimer cette catégorie ?')) return
         await api.delete(`/categories/${id}`)
-        fetchCategories()
+        if (categories.length === 1 && page > 1) {
+            setPage(page - 1)
+        } else {
+            fetchCategories()
+        }
     }
 
     return (
@@ -174,6 +184,8 @@ function Categories() {
                             </div>
                         ))
                     )}
+
+                    <AdminPagination page={page} lastPage={lastPage} total={total} onPageChange={setPage} />
                 </div>
             </div>
         </AdminLayout>

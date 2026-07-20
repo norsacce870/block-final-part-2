@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Storage;
 
 class FilmController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(
-            Film::with('category')->get()
-        );
+        $query = Film::with('category')->orderByDesc('created_at');
+
+        if ($request->has('page')) {
+            return response()->json($query->paginate(15));
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)

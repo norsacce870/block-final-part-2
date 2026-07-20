@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react'
 import { Check, X, Trash2, Ticket } from 'lucide-react'
 import AdminLayout from '../../components/AdminLayout'
 import PageHeader from '../../components/PageHeader'
+import AdminPagination from '../../components/AdminPagination'
 import api from '../../api/axios'
 
 function BookingsList() {
     const [bookings, setBookings] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [total, setTotal] = useState(0)
 
     const fetchBookings = async () => {
-        const res = await api.get('/bookings')
-        setBookings(res.data)
+        const res = await api.get('/bookings', { params: { page } })
+        setBookings(res.data.data)
+        setLastPage(res.data.last_page)
+        setTotal(res.data.total)
     }
 
     useEffect(() => {
@@ -20,7 +26,7 @@ function BookingsList() {
             setLoading(false)
         }
         load()
-    }, [])
+    }, [page])
 
     const handleStatus = async (id, status) => {
         await api.put(`/bookings/${id}`, { status })
@@ -30,7 +36,11 @@ function BookingsList() {
     const handleDelete = async (id) => {
         if (!confirm('Supprimer cette réservation ?')) return
         await api.delete(`/bookings/${id}`)
-        fetchBookings()
+        if (bookings.length === 1 && page > 1) {
+            setPage(page - 1)
+        } else {
+            fetchBookings()
+        }
     }
 
     const statusInfo = {
@@ -163,6 +173,8 @@ function BookingsList() {
                             })
                         )}
                     </div>
+
+                    <AdminPagination page={page} lastPage={lastPage} total={total} onPageChange={setPage} />
                 </div>
             </div>
         </AdminLayout>

@@ -3,31 +3,39 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Pencil, Trash2, Plus, Eye, Film as FilmIcon } from 'lucide-react'
 import AdminLayout from '../../../components/AdminLayout'
 import PageHeader from '../../../components/PageHeader'
+import AdminPagination from '../../../components/AdminPagination'
 import api from '../../../api/axios'
 import { STORAGE_URL } from '../../../utils/storageUrl'
 
 function FilmsList() {
     const [films, setFilms] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [lastPage, setLastPage] = useState(1)
+    const [total, setTotal] = useState(0)
     const navigate = useNavigate()
 
+    const load = async () => {
+        setLoading(true)
+        const res = await api.get('/films', { params: { page } })
+        setFilms(res.data.data)
+        setLastPage(res.data.last_page)
+        setTotal(res.data.total)
+        setLoading(false)
+    }
+
     useEffect(() => {
-        const load = async () => {
-            setLoading(true)
-            const res = await api.get('/films')
-            const sorted = [...res.data].sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            )
-            setFilms(sorted)
-            setLoading(false)
-        }
         load()
-    }, [])
+    }, [page])
 
     const handleDelete = async (id) => {
         if (!confirm('Supprimer ce film ?')) return
         await api.delete(`/films/${id}`)
-        setFilms(films.filter(f => f.id_film !== id))
+        if (films.length === 1 && page > 1) {
+            setPage(page - 1)
+        } else {
+            load()
+        }
     }
 
     const statusInfo = (status) =>
@@ -165,6 +173,8 @@ function FilmsList() {
                             })
                         )}
                     </div>
+
+                    <AdminPagination page={page} lastPage={lastPage} total={total} onPageChange={setPage} />
                 </div>
             </div>
         </AdminLayout>
