@@ -15,7 +15,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         // Utilisation de postJson pour les requêtes API
-        $response = $this->postJson('/login', [
+        $response = $this->postJson('/api/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
@@ -32,7 +32,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->postJson('/login', [
+        $response = $this->postJson('/api/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
@@ -47,7 +47,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         // On s'authentifie via le guard 'sanctum' pour les APIs et on utilise postJson
-        $response = $this->actingAs($user, 'sanctum')->postJson('/logout');
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/logout');
 
         // Au lieu d'assertGuest() qui vérifie les sessions web, 
         // on valide que l'API répond avec succès (statut 200) après avoir révoqué le token
