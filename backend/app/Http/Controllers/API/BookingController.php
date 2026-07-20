@@ -117,7 +117,7 @@ class BookingController extends Controller
             $booking->screening->increment('seats_remaining', $booking->seats_count);
         }
 
-        $booking->update(['status' => 'cancelled']);
+        $booking->delete();
 
         return response()->json(null, 204);
     }
