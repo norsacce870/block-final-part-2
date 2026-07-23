@@ -5,6 +5,7 @@ use App\Http\Controllers\API\RoomController;
 use App\Http\Controllers\API\FilmController;
 use App\Http\Controllers\API\ScreeningController;
 use App\Http\Controllers\API\BookingController;
+use App\Http\Controllers\API\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 
@@ -36,4 +37,5 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('/screenings', ScreeningController::class)
         ->except(['index', 'show']);
     Route::put('/bookings/{booking}', [BookingController::class, 'update']);
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 });

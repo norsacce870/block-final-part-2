@@ -15,22 +15,21 @@ class BookingController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
-            $query = Booking::with(['user', 'screening.film', 'screening.room'])
-                ->orderByDesc('created_at');
+        $query = $user->isAdmin()
+            ? Booking::with(['user', 'screening.film', 'screening.room'])
+            : Booking::with(['screening.film', 'screening.room'])->where('id_user', $user->id);
 
-            if ($request->has('page')) {
-                return response()->json($query->paginate(15));
-            }
+        $query->orderByDesc('created_at');
 
-            return response()->json($query->get());
+        if ($request->filled('status')) {
+            $query->where('status', $request->query('status'));
         }
 
-        return response()->json(
-            Booking::with(['screening.film', 'screening.room'])
-                ->where('id_user', $user->id)
-                ->get()
-        );
+        if ($request->has('page')) {
+            return response()->json($query->paginate(15));
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)

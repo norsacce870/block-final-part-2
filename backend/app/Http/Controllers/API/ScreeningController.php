@@ -12,6 +12,14 @@ class ScreeningController extends Controller
     {
         $query = Screening::with(['film', 'room'])->orderByDesc('created_at');
 
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->query('date'));
+        }
+
+        if ($request->filled('id_film')) {
+            $query->where('id_film', $request->query('id_film'));
+        }
+
         if ($request->has('page')) {
             return response()->json($query->paginate(15));
         }

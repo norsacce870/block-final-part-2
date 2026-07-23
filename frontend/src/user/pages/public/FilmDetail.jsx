@@ -49,14 +49,10 @@ function FilmDetailContent() {
       })
       .catch(() => {});
 
-    // No endpoint for "screenings of a single film" was confirmed, so we
-    // fetch everything and filter client-side — same defensive pattern as
-    // the homepage's status split.
     api
-      .get("/screenings")
+      .get("/screenings", { params: { id_film: id } })
       .then((res) => {
-        const all = res.data?.data ?? res.data ?? [];
-        const forFilm = all.filter((s) => String(s.id_film) === String(id));
+        const forFilm = res.data?.data ?? res.data ?? [];
         if (forFilm.length) setScreenings(forFilm);
       })
       .catch(() => {});

@@ -50,23 +50,15 @@ function AccueilContent() {
     // request fails (e.g. backend not running yet), we just keep the demo
     // data.
     //
-    // One single GET /films call, split client-side by film.status — this
-    // doesn't depend on the backend actually filtering by a `status` query
-    // param, it just reads the field that's already on each film (the same
-    // one driving the "À l'affiche" / "À venir" badge in the admin Films
-    // list). If your status values aren't exactly "showing" / "coming_soon",
-    // update the two checks below to match.
+    // Two separate GET /films calls, filtered server-side by `status` (capped
+    // at 15 each via the backend's default page size) instead of downloading
+    // the entire catalog and splitting it client-side.
     api
-      .get("/films")
+      .get("/films", { params: { status: "showing", page: 1 } })
       .then((res) => {
-        const films = res.data?.data ?? res.data ?? [];
-        if (!films.length) return;
-
-        const showing = films
-          .filter((f) => f.status === "showing")
+        const showing = (res.data?.data ?? res.data ?? [])
+          .slice()
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        const comingSoon = films.filter((f) => f.status === "coming_soon");
-
         if (showing.length) {
           // No dedicated "featured" flag exists on the film model yet, so
           // the hero spotlights the most recently created showing film —
@@ -75,6 +67,13 @@ function AccueilContent() {
           setFeatured(showing[0]);
           setNowShowing(showing);
         }
+      })
+      .catch(() => {});
+
+    api
+      .get("/films", { params: { status: "coming_soon", page: 1 } })
+      .then((res) => {
+        const comingSoon = res.data?.data ?? res.data ?? [];
         if (comingSoon.length) setUpcoming(comingSoon);
       })
       .catch(() => {});

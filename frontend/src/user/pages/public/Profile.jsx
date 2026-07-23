@@ -10,6 +10,7 @@ import Navbar from "@/user/components/public/Navbar";
 import Footer from "@/user/components/public/Footer";
 import api from "@/api/axios";
 import { generateTicketPDF } from "@/utils/generateTicketPDF";
+import Pagination from "@/user/components/public/Pagination";
 
 // ─── wrapper ──────────────────────────────────────────────────────────────────
 
@@ -37,9 +38,22 @@ function ProfileContent() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("infos");
 
-  // bookings
-  const [bookings, setBookings] = useState([]);
-  const [bookingsLoading, setBookingsLoading] = useState(true);
+  // booking stats (header cards) — lightweight counts, not full lists
+  const [stats, setStats] = useState({ total: null, confirmed: null, pending: null });
+
+  // reservations tab (paginated)
+  const [reservations, setReservations] = useState([]);
+  const [reservationsLoading, setReservationsLoading] = useState(true);
+  const [reservationsPage, setReservationsPage] = useState(1);
+  const [reservationsLastPage, setReservationsLastPage] = useState(1);
+  const [reservationsTotal, setReservationsTotal] = useState(0);
+
+  // billets tab (paginated, confirmed only)
+  const [tickets, setTickets] = useState([]);
+  const [ticketsLoading, setTicketsLoading] = useState(true);
+  const [ticketsPage, setTicketsPage] = useState(1);
+  const [ticketsLastPage, setTicketsLastPage] = useState(1);
+  const [ticketsTotal, setTicketsTotal] = useState(0);
 
   // info editing
   const [editing, setEditing] = useState(false);
@@ -66,19 +80,61 @@ function ProfileContent() {
     }
   }, [user]);
 
+  // The API already scopes /bookings to the current user for non-admins, so
+  // no client-side filtering is needed here.
+  const loadStats = () => {
+    if (!user) return;
+    Promise.all([
+      api.get("/bookings", { params: { page: 1 } }),
+      api.get("/bookings", { params: { page: 1, status: "confirmed" } }),
+      api.get("/bookings", { params: { page: 1, status: "pending" } }),
+    ])
+      .then(([all, confirmed, pending]) => {
+        setStats({ total: all.data.total, confirmed: confirmed.data.total, pending: pending.data.total });
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
-    setBookingsLoading(true);
+    loadStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  const loadReservations = (page) => {
+    setReservationsLoading(true);
     api
-      .get("/bookings")
+      .get("/bookings", { params: { page } })
       .then((res) => {
-        const all = res.data?.data ?? res.data ?? [];
-        // Filter to current user's bookings only (defensive: API may already do this)
-        const mine = all.filter((b) => String(b.user_id) === String(user?.id));
-        setBookings(mine.length ? mine : all);
+        setReservations(res.data.data ?? []);
+        setReservationsLastPage(res.data.last_page ?? 1);
+        setReservationsTotal(res.data.total ?? 0);
       })
       .catch(() => {})
-      .finally(() => setBookingsLoading(false));
-  }, [user]);
+      .finally(() => setReservationsLoading(false));
+  };
+
+  useEffect(() => {
+    if (tab === "reservations") loadReservations(reservationsPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, reservationsPage]);
+
+  const loadTickets = (page) => {
+    setTicketsLoading(true);
+    api
+      .get("/bookings", { params: { page, status: "confirmed" } })
+      .then((res) => {
+        setTickets(res.data.data ?? []);
+        setTicketsLastPage(res.data.last_page ?? 1);
+        setTicketsTotal(res.data.total ?? 0);
+      })
+      .catch(() => {})
+      .finally(() => setTicketsLoading(false));
+  };
+
+  useEffect(() => {
+    if (tab === "billets") loadTickets(ticketsPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, ticketsPage]);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -96,8 +152,13 @@ function ProfileContent() {
     if (!confirm("Annuler cette réservation ? Les places seront libérées.")) return;
     try {
       await api.delete(`/bookings/${bookingId}`);
-      setBookings((prev) => prev.filter((b) => b.id_booking !== bookingId));
       showToast("Réservation annulée.");
+      if (reservations.length === 1 && reservationsPage > 1) {
+        setReservationsPage((p) => p - 1);
+      } else {
+        loadReservations(reservationsPage);
+      }
+      loadStats();
     } catch {
       showToast("Impossible d'annuler cette réservation.");
     }
@@ -176,7 +237,6 @@ function ProfileContent() {
   const memberSince = user?.created_at
     ? new Date(user.created_at).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
     : null;
-  const confirmed = bookings.filter((b) => b.status === "confirmed").length;
 
   // ── tabs config ───────────────────────────────────────────────────────────
 
@@ -251,9 +311,9 @@ function ProfileContent() {
             {/* Stats */}
             <div className="flex gap-3.5 pb-1">
               {[
-                { value: bookings.length, label: "Réservations" },
-                { value: confirmed, label: "Confirmées" },
-                { value: bookings.filter((b) => b.status === "pending").length, label: "En attente" },
+                { value: stats.total, label: "Réservations" },
+                { value: stats.confirmed, label: "Confirmées" },
+                { value: stats.pending, label: "En attente" },
               ].map((s) => (
                 <div
                   key={s.label}
@@ -261,7 +321,7 @@ function ProfileContent() {
                   style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
                 >
                   <div className="font-['Sora'] text-[26px] font-bold" style={{ color: "var(--text)" }}>
-                    {s.value}
+                    {s.value ?? "…"}
                   </div>
                   <div className="mt-0.5 text-[11.5px]" style={{ color: "var(--faint)" }}>
                     {s.label}
@@ -382,12 +442,12 @@ function ProfileContent() {
             {/* ── Réservations ── */}
             {tab === "reservations" && (
               <div className="flex flex-col gap-4">
-                {bookingsLoading ? (
+                {reservationsLoading ? (
                   <Placeholder>Chargement…</Placeholder>
-                ) : bookings.length === 0 ? (
+                ) : reservations.length === 0 ? (
                   <Placeholder>Aucune réservation pour l'instant.</Placeholder>
                 ) : (
-                  bookings.map((b) => {
+                  reservations.map((b) => {
                     const st = STATUS[b.status] ?? STATUS.expired;
                     return (
                       <article
@@ -465,19 +525,25 @@ function ProfileContent() {
                     );
                   })
                 )}
+                <Pagination
+                  page={reservationsPage}
+                  lastPage={reservationsLastPage}
+                  total={reservationsTotal}
+                  onPageChange={setReservationsPage}
+                />
               </div>
             )}
 
             {/* ── Billets ── */}
             {tab === "billets" && (
+              <div className="flex flex-col gap-5">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {bookingsLoading ? (
+                {ticketsLoading ? (
                   <Placeholder>Chargement…</Placeholder>
-                ) : bookings.filter((b) => b.status === "confirmed").length === 0 ? (
+                ) : tickets.length === 0 ? (
                   <Placeholder>Aucun billet confirmé pour l'instant.</Placeholder>
                 ) : (
-                  bookings
-                    .filter((b) => b.status === "confirmed")
+                  tickets
                     .map((b) => (
                       <article
                         key={b.id_booking}
@@ -548,6 +614,13 @@ function ProfileContent() {
                       </article>
                     ))
                 )}
+              </div>
+              <Pagination
+                page={ticketsPage}
+                lastPage={ticketsLastPage}
+                total={ticketsTotal}
+                onPageChange={setTicketsPage}
+              />
               </div>
             )}
 

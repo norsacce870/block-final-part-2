@@ -103,27 +103,20 @@ function Skeleton() {
 // ─── dashboard ────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
-    const [films, setFilms] = useState(null)
-    const [screenings, setScreenings] = useState(null)
-    const [bookings, setBookings] = useState(null)
+    const [stats, setStats] = useState(null)
 
     useEffect(() => {
-        api.get('/films').then(r => setFilms(r.data)).catch(() => setFilms([]))
-        api.get('/screenings').then(r => setScreenings(r.data)).catch(() => setScreenings([]))
-        api.get('/bookings').then(r => setBookings(r.data)).catch(() => setBookings([]))
+        api.get('/dashboard/stats').then(r => setStats(r.data)).catch(() => setStats(null))
     }, [])
 
-    // derived stats
-    const showing = films?.filter(f => f.status === 'showing').length
-    const comingSoon = films?.filter(f => f.status === 'coming_soon').length
-    const totalBookings = bookings?.length
-    const pending = bookings?.filter(b => b.status === 'pending').length
-    const confirmed = bookings?.filter(b => b.status === 'confirmed').length
-    const recentBookings = bookings
-        ? [...bookings]
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-              .slice(0, 6)
-        : null
+    // derived stats — counted server-side (COUNT queries), not by loading full tables
+    const showing = stats?.films_showing
+    const comingSoon = stats?.films_coming_soon
+    const totalBookings = stats?.bookings_total
+    const pending = stats?.bookings_pending
+    const confirmed = stats?.bookings_confirmed
+    const screeningsCount = stats?.screenings_count
+    const recentBookings = stats?.recent_bookings ?? null
 
     return (
         <AdminLayout>
@@ -162,7 +155,7 @@ export default function Dashboard() {
                     <StatCard
                         icon={CalendarClock}
                         label="Séances programmées"
-                        value={screenings?.length}
+                        value={screeningsCount}
                     />
                     <StatCard
                         icon={Ticket}
@@ -269,7 +262,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Split à l'affiche / à venir */}
-                        {films && films.length > 0 && (
+                        {stats && (showing > 0 || comingSoon > 0) && (
                             <div
                                 className="admin-card mt-5 overflow-hidden rounded-2xl border"
                                 style={{ borderColor: 'var(--admin-border)' }}

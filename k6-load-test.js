@@ -33,18 +33,58 @@ export const options = {
   },
 };
 
+// Date du jour au format YYYY-MM-DD, pour coller au filtre `date` envoyé
+// par la page Séances (voir Seances.jsx).
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 export default function () {
-  const filmsRes = http.get(`${BASE_URL}/films`);
-  check(filmsRes, { 'GET /films = 200': (r) => r.status === 200 });
+  // ── Accueil : films filtrés par statut côté serveur (status=showing /
+  // coming_soon) au lieu du catalogue complet — cf. Accueil.jsx.
+  const nowShowingRes = http.get(`${BASE_URL}/films?status=showing&page=1`);
+  check(nowShowingRes, { 'GET /films?status=showing = 200': (r) => r.status === 200 });
+
+  const upcomingRes = http.get(`${BASE_URL}/films?status=coming_soon&page=1`);
+  check(upcomingRes, { 'GET /films?status=coming_soon = 200': (r) => r.status === 200 });
 
   const categoriesRes = http.get(`${BASE_URL}/categories`);
   check(categoriesRes, { 'GET /categories = 200': (r) => r.status === 200 });
 
-  const screeningsRes = http.get(`${BASE_URL}/screenings`);
-  check(screeningsRes, { 'GET /screenings = 200': (r) => r.status === 200 });
+  sleep(1);
 
-  sleep(1); // pause d'1s entre chaque itération d'un VU, pour simuler un comportement humain
+  // ── Séances : séances filtrées par date côté serveur — cf. Seances.jsx.
+  const screeningsRes = http.get(`${BASE_URL}/screenings?date=${today()}`);
+  check(screeningsRes, { 'GET /screenings?date= = 200': (r) => r.status === 200 });
+
+  sleep(1);
+
+  // ── FilmDetail : séances filtrées par film à partir du premier film à
+  // l'affiche récupéré ci-dessus — cf. FilmDetail.jsx.
+  let filmId = null;
+  try {
+    const body = nowShowingRes.json();
+    const list = body.data ?? body;
+    filmId = list?.[0]?.id_film ?? null;
+  } catch (e) {
+    filmId = null;
+  }
+
+  if (filmId) {
+    const filmScreeningsRes = http.get(`${BASE_URL}/screenings?id_film=${filmId}`);
+    check(filmScreeningsRes, { 'GET /screenings?id_film= = 200': (r) => r.status === 200 });
+  }
+
+  sleep(1); // pause entre chaque itération d'un VU, pour simuler un comportement humain
 }
+
+/**
+ * Note : les endpoints authentifiés (/bookings, /dashboard/stats, désormais
+ * paginés eux aussi — voir BookingController.php et DashboardController.php)
+ * ne sont pas couverts ici : ce script n'a pas de session ni d'identifiants
+ * de test valides. Si besoin, ajouter un scénario avec un POST /login (ou
+ * équivalent Sanctum) préalable pour les inclure.
+ */
 
 /**
  * À la fin du test, k6 affiche un résumé avec :

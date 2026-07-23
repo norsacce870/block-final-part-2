@@ -79,18 +79,18 @@ function SeancesContent() {
 
   useEffect(() => {
     setLoading(true);
-    api.get("/screenings")
+    api.get("/screenings", { params: { date: selDate } })
       .then((res) => setScreenings(res.data?.data ?? res.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [selDate]);
 
   // ── filtering ──────────────────────────────────────────────────────────────
+  // Date filtering now happens server-side (see fetch above); only
+  // period/format remain client-side since they apply to a single day's
+  // worth of screenings, not the whole table.
   const filtered = useMemo(() => {
     return screenings.filter((s) => {
-      // date
-      if (s.date !== selDate) return false;
-
       // period
       if (period !== "all") {
         const h = parseInt(s.time?.slice(0, 2) ?? "0", 10);

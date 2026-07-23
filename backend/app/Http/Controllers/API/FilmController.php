@@ -13,6 +13,10 @@ class FilmController extends Controller
     {
         $query = Film::with('category')->orderByDesc('created_at');
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->query('status'));
+        }
+
         if ($request->has('page')) {
             return response()->json($query->paginate(15));
         }
